@@ -1,16 +1,28 @@
 import React from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import locations from "../data/location.json";
+import { Navigate, useParams } from "react-router-dom";
+import { useFetch } from "../hooks/useFetch";
+import { LOCATION_URL } from "../App";
+import Loader from "./Loader/Loader";
+import { BackButton } from "./BackButton";
 
 export function LocationCard() {
-  const navigate = useNavigate();
   const { id } = useParams();
-  const currLocation = locations.find((location) => location.id === Number(id));
-  if (currLocation === undefined) {
+
+  const { data, loading, error } = useFetch(LOCATION_URL, {
+    id,
+  });
+
+  if (error) {
     return <Navigate to="/locations" />;
   }
-  const { name, type, dimension, created } = currLocation;
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  const { name, type, dimension, created } = data;
   const localedDate = new Date(created).toLocaleString();
+
   return (
     <div className="location-card">
       <div className="location-card__name">
@@ -25,9 +37,7 @@ export function LocationCard() {
       <div className="location-card__created">
         <span>Создан:</span> {localedDate}
       </div>
-      <button className="back-button" onClick={() => navigate(-1)}>
-        Назад
-      </button>
+      <BackButton />
     </div>
   );
 }

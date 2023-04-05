@@ -1,74 +1,76 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { Home } from "../pages/Home";
-import { Characters } from "./Characters";
-import { Locations } from "./Locations";
-import { Episodes } from "./Episodes";
-import { NotFound } from "../pages/NotFound";
-import { CharacterCard } from "../components/CharacterCard";
-import { LocationCard } from "../components/LocationCard";
-import { EpisodeCard } from "../components/EpisodeCard";
-import { Login } from "../pages/Login";
-import { PrivateRoute } from "../components/PrivateRoute";
+import { LazyLoad } from "../components/LazyLoad";
+import { PrivateLazyLoad } from "../components/PrivateLazyLoad";
 
 export function RedirectRouter() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={<LazyLoad from="pages/Home" componentName="Home" />}
+        />
+
         <Route
           path="/characters"
           element={
-            <PrivateRoute>
-              <Characters />
-            </PrivateRoute>
+            <PrivateLazyLoad
+              from="pages/Characters"
+              componentName="Characters"
+            />
           }
         />
         <Route
           path="/characters/:id"
           element={
-            <PrivateRoute>
-              <CharacterCard />
-            </PrivateRoute>
+            <PrivateLazyLoad
+              from="components/CharacterCard"
+              componentName="CharacterCard"
+            />
           }
         />
 
         <Route
           path="/locations"
           element={
-            <PrivateRoute>
-              <Locations />
-            </PrivateRoute>
+            <PrivateLazyLoad from="pages/Locations" componentName="Locations" />
           }
         />
         <Route
           path="/locations/:id"
           element={
-            <PrivateRoute>
-              <LocationCard />
-            </PrivateRoute>
+            <PrivateLazyLoad
+              from="components/LocationCard"
+              componentName="LocationCard"
+            />
           }
         />
 
         <Route
           path="/episodes"
           element={
-            <PrivateRoute>
-              <Episodes />
-            </PrivateRoute>
+            <PrivateLazyLoad from="pages/Episodes" componentName="Episodes" />
           }
         />
         <Route
           path="/episodes/:id"
           element={
-            <PrivateRoute>
-              <EpisodeCard />
-            </PrivateRoute>
+            <PrivateLazyLoad
+              from="components/EpisodeCard"
+              componentName="EpisodeCard"
+            />
           }
         />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="/login"
+          element={<LazyLoad from="pages/Login" componentName="Login" />}
+        />
+        <Route
+          path="*"
+          element={<LazyLoad from="pages/NotFound" componentName="NotFound" />}
+        />
       </Routes>
     </div>
   );

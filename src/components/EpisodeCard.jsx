@@ -1,16 +1,25 @@
 import React from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import episodes from "../data/episode.json";
+import { Navigate, useParams } from "react-router-dom";
+import { useFetch } from "../hooks/useFetch";
+import { EPISODE_URL } from "../App";
+import Loader from "./Loader/Loader";
+import { BackButton } from "./BackButton";
 
 export function EpisodeCard() {
-  const navigate = useNavigate();
   const { id } = useParams();
-  const currEpisode = episodes.find((episode) => episode.id === Number(id));
-  if (currEpisode === undefined) {
+  const { data, loading, error } = useFetch(EPISODE_URL, {
+    id,
+  });
+
+  if (error) {
     return <Navigate to="/episodes" />;
   }
-  const { name, air_date, episode, created } = currEpisode;
 
+  if (loading) {
+    return <Loader />;
+  }
+
+  const { name, air_date, episode, created } = data;
   const localedDate = new Date(created).toLocaleString();
   return (
     <div className="episode-card">
@@ -26,9 +35,7 @@ export function EpisodeCard() {
       <div className="episode-card__created">
         <span>Создан:</span> {localedDate}
       </div>
-      <button className="back-button" onClick={() => navigate(-1)}>
-        Назад
-      </button>
+      <BackButton />
     </div>
   );
 }
