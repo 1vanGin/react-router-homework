@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import Loader from "../components/Loader/Loader";
 import { LOCATION_URL } from "../App";
+import { useLastNodeRef } from "../hooks/useLastNodeRef";
 
 export function Locations() {
   const [pageNumber, setPageNumber] = useState(1);
@@ -11,24 +12,11 @@ export function Locations() {
   });
 
   const observer = useRef();
-  const lastNodeRef = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-      observer.current = new IntersectionObserver((entries) => {
-        //виден ли элемент на экране
-        if (entries[0].isIntersecting && hasMore) {
-          setPageNumber((prevState) => prevState + 1);
-        }
-      });
-      if (node) {
-        observer.current.observe(node);
-      }
-    },
-    [loading, hasMore]
-  );
+  const lastNodeRef = useLastNodeRef(observer, setPageNumber, {
+    loading,
+    hasMore,
+  });
+
   return (
     <>
       <h1>Локации</h1>
